@@ -1,0 +1,9 @@
+---
+
+- hosts: localhost
+  sudo: True
+
+  tasks:
+      - name: Install pycharm and its java dependencies
+        command: ./install_pycharm 2>&1 | tee -a pycharm_install.log
+
