@@ -6,11 +6,19 @@ export ANSIBLE_NOCOWS=1
 # Run the playbook using the local hosts file
 if [ $1 ];
 then
-    # Silent for a known working "production" setting 
-    # ansible-playbook -i ./hosts -u $1 ./site.yml
+    if [ $1 = "clean" ];
+    then
+        rm -rf ./runcons
+        rm -rf /opt/py_devtools
+        rm -f ./tasks/Miniconda3-*
 
-    # Verbose for development and lots of output
-    ansible-playbook -i ./hosts -vvvv -u $1 ./site.yml
+    else
+        # Silent for a known working "production" setting 
+        # ansible-playbook -i ./hosts -u $1 ./site.yml
+
+        # Verbose for development and lots of output
+        ansible-playbook -i ./hosts -vvvv -u $1 ./site.yml
+    fi
 else
     echo "Please append a valid user name to the command."
     echo "Run the command as sudo.  An example would be:"
