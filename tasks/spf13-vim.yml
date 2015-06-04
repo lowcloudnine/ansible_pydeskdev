@@ -1,0 +1,6 @@
+# file: tasks/spf13-vim.yml
+- hosts: localhost
+
+  tasks:
+  - name: install spf13-vim from http://vim.spf13.com/
+    command:  curl http://j.mp/spf13-vim3 -L -o - | sh
