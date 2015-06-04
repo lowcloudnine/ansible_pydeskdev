@@ -1,9 +1,0 @@
----
-- hosts: localhost
-
-  tasks:
-    - name: ensure git is at latest version
-      apt:
-          pkg: git
-          state: latest
-

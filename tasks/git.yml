@@ -1,0 +1,16 @@
+---
+# file:  tasks/git.yml
+
+- hosts: localhost
+
+  tasks:
+    - name: ensure git is at latest version
+      apt:
+          pkg: git
+          state: latest
+
+    - name: clone the runcons project for rc files
+      git: repo=https://github.com/lowcloudnine/runcons.git
+           dest=../runcons
+           refspec=+refs/pull/*:refs/heads/*
+
