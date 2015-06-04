@@ -4,5 +4,11 @@
 export ANSIBLE_NOCOWS=1
 
 # Run the playbook using the local hosts file
-ansible-playbook -i ./hosts ./site.yml
-
+if [ $1 ];
+then
+    ansible-playbook -i ./hosts -u $1 ./site.yml
+else
+    echo "Please append a valid user name to the command."
+    echo "Run the command as sudo.  An example would be:"
+    echo "sudo ./setup joecool"
+fi
