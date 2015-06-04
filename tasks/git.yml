@@ -14,3 +14,10 @@
            dest=../runcons
            refspec=+refs/pull/*:refs/heads/*
 
+    - name: change the owner on runcons
+      file: path=../runcons
+            state=directory
+            recurse=yes
+            owner={{ ansible_ssh_user }}
+            mode=0755
+
