@@ -1,0 +1,26 @@
+---
+# file: tasks/dir_struct.yml
+- hosts: localhost
+
+  tasks:
+    - name:  download miniconda for use later
+      command:  curl -O https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+      
+    - name: change permissions on Miniconda installer
+      file:  path=./Miniconda3-latest-Linux-x86_64.sh 
+             owner={{ ansible_ssh_user }}
+             mode=0775
+    
+    - name: install miniconda
+      command: bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /opt/py_devtools/miniconda3
+
+    - name: change owner/permission on miniconda installation
+      file:  path=/opt/py_devtools/miniconda3
+             state=directory
+             recurse=yes
+             owner={{ ansible_ssh_user }}
+             mode=0775
+             
+    - name: remove the Miniconda file from tasks folder
+      file:  path=./Miniconda3-latest-Linux-x86_64.sh
+             state=absent
