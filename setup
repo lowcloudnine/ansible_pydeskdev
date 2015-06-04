@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Turn off cowsay
+export ANSIBLE_NOCOWS=1
+
+# Run the playbook using the local hosts file
+ansible-playbook -i ./hosts ./pydeskdev.yml
+

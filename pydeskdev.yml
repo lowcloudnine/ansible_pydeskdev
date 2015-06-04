@@ -7,10 +7,3 @@
           pkg: git
           state: latest
 
-              # Set up the directories and files
-    - name: create the python directory
-      file: path=/opt/python state=directory mode=0755
-
-    - name: create the projects directory
-      file: path=/opt/projects state=directory mode=0755
-
