@@ -5,7 +5,7 @@ An opinionated series of Ansible Playbooks for creating a Python development env
 
 These tasks have to assume some basic things.  Below is the list of these assumptions:
 
-* users does not have sudo or root priviledges
+* user in on the sudoer list
 * the system being used is Ubuntu 14.04 or greater (the only system this is being built on)
 * Python 2.6 or Python 2.7 are the default on the system
   - This is a ansible requirement, once ansible runs on Python 3 this will change
