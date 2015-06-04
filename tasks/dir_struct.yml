@@ -1,0 +1,20 @@
+---
+# file: tasks/dir_struct.yml
+- hosts: localhost
+  sudo: True
+  
+  tasks:
+    - name: create python development directory under opt
+      file: path=/opt/py_devtools state=directory
+            owner={{ ansible_ssh_user }}
+            mode=0755
+
+    - name: create a envs directory under /opt/py_devtools
+      file: path=/opt/py_devtools/envs state=directory
+            owner={{ ansible_ssh_user }}
+            mode=0755
+
+    - name: create a projects directory in /opt for the users projects
+      file: path=/opt/projects state=directory
+            owner={{ ansible_ssh_user }}
+            mode=0755
