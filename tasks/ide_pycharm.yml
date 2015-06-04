@@ -1,6 +1,6 @@
 ---
 
-- host: localhost
+- hosts: localhost
   sudo: True
 
   tasks:
