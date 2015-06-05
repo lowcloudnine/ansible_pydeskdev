@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# use apt to install ansible, won't do it if already installed
+sudo apt-get install ansible
+
 # Turn off cowsay
 export ANSIBLE_NOCOWS=1
 
@@ -11,7 +14,6 @@ then
         rm -rf ./runcons
         rm -rf /opt/py_devtools
         rm -f ./tasks/Miniconda3-*
-
     else
         # Silent for a known working "production" setting 
         # ansible-playbook -i ./hosts -u $1 ./site.yml
