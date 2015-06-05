@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 # Custome directories
+.idea
 /runcons
 __pycache__/
 *.py[cod]
