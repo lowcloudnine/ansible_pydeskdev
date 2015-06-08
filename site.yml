@@ -1,6 +1,5 @@
 # file: site.yml
 - include: tasks/prerequisites.yml
-# - include: tasks/dir_struct.yml
 # - include: tasks/miniconda.yml
 # - include: tasks/spf13-vim.yml
 # - include: tasks/ide_pycharm.yml

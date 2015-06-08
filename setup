@@ -12,7 +12,7 @@ then
     if [ $1 = "clean" ];
     then
         rm -rf ./runcons
-        rm -rf /opt/py_devtools
+        rm -rf /opt/pytools
         rm -f ./tasks/Miniconda3-*
     else
         # Silent for a known working "production" setting 
