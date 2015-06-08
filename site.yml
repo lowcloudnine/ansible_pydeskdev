@@ -2,6 +2,6 @@
 - include: tasks/prerequisites.yml
 # - include: tasks/miniconda.yml
 # - include: tasks/spf13-vim.yml
-# - include: tasks/ide_pycharm.yml
+- include: tasks/ide_pycharm.yml
 # - include: tasks/ide_pydev.yml
 
