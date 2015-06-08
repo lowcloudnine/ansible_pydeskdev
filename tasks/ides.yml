@@ -4,7 +4,7 @@
 
   tasks:
     # -------------------------------------------------------------------------
-    # Install pycharm
+    # Get source file and add key
     # -------------------------------------------------------------------------
     - name: add key and get source file for pycharm
       shell: "{{ item  }}"
@@ -12,6 +12,9 @@
         - wget -q -O - http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
         - sudo sh -c 'echo "deb http://archive.getdeb.net/ubuntu trusty-getdeb apps" >> /etc/apt/sources.list.d/getdeb.list'
 
+    # -------------------------------------------------------------------------
+    # Install pycharm
+    # -------------------------------------------------------------------------
     - name: install pycharm
       apt:
         name: pycharm
