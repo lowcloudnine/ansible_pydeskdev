@@ -1,22 +1,36 @@
 ---
-# file: tasks/dir_struct.yml
+# file: tasks/miniconda.yml
 - hosts: localhost
 
   tasks:
+    # -------------------------------------------------------------------------
+    # Download, install miniconda and setup environments
+    # -------------------------------------------------------------------------
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # check for existence of miniconda first &
+    # set stat for miniconda to check if it exists later
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    - stat: path=/opt/pytools/miniconda3
+      register: miniconda
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Download miniconda & set permissions
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     - name:  download miniconda for use later
       command:  curl -O https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+      when: miniconda.stat.exists == False
       
     - name: change permissions on Miniconda installer
       file:  path=./Miniconda3-latest-Linux-x86_64.sh 
              owner={{ ansible_ssh_user }}
              mode=0775
     
-    - stat: path=/opt/pytools/miniconda3
-      register: miniconda_exists
-    
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Install miniconda to /opt/pytools
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     - name: install miniconda
       command: bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /opt/pytools/miniconda3
-      when: miniconda_exists.stat.exists == False
+      when: miniconda.stat.exists == False
 
     - name: change owner/permission on miniconda installation
       file:  path=/opt/pytools/miniconda3
@@ -24,7 +38,54 @@
              recurse=yes
              owner={{ ansible_ssh_user }}
              mode=0775
-             
+
     - name: remove the Miniconda file from tasks folder
       file:  path=./Miniconda3-latest-Linux-x86_64.sh
              state=absent
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Create various default conda envs
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    - name: add envs_dirs /opt/pytools/envs to condarc
+      command:  /opt/pytools/miniconda3/bin/conda config --add envs_dirs /opt/pytools/envs
+
+    - name: create python26 env
+      command:  /opt/pytools/miniconda3/bin/conda create -n python26 python=2.6
+
+    - name: create python27 env
+      command:  /opt/pytools/miniconda3/bin/conda create -n python27 python=2.7
+
+    - name: create python33 env
+      command:  /opt/pytools/miniconda3/bin/conda create -n python33 python=3.3
+
+    - name: create python34 env
+      command:  /opt/pytools/miniconda3/bin/conda create -n python34 python=3.4
+
+    - name: create anaconda3 env
+      command:  /opt/pytools/miniconda3/bin/conda create -n anaconda3 python=3.4 anaconda
+
+    - name: change permissions for all created envs
+      file:  path=/opt/pytools/envs
+             state=directory
+             recurse=yes
+             owner={{ ansible_ssh_user }}
+             mode=0775
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Update the envs and packages with them
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    - name: update python26
+      command:  /opt/pytools/envs/python26/bin/conda update --prefix /opt/pytools/envs/python26 --all
+
+    - name: update python27
+      command:  /opt/pytools/envs/python27/bin/conda update --prefix /opt/pytools/envs/python27 --all
+
+    - name: update python33
+      command:  /opt/pytools/envs/python33/bin/conda update --prefix /opt/pytools/envs/python33 --all
+
+    - name: update python34
+      command:  /opt/pytools/envs/python34/bin/conda update --prefix /opt/pytools/envs/python34 --all
+
+    - name: update anaconda3
+      command:  /opt/pytools/envs/anaconda3/bin/conda update --prefix /opt/pytools/envs/anaconda3 --all
+  
