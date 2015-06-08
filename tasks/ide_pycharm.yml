@@ -6,4 +6,3 @@
   tasks:
       - name: Install pycharm and its java dependencies
         command: ../scripts/install_pycharm &> pycharm_install.log
-

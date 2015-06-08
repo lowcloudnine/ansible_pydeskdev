@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # use apt to install ansible, won't do it if already installed
-sudo apt-get install ansible
+if ! which ansible-playbook > /dev/null; 
+then
+    sudo apt-get install ansible
+fi
 
 # Turn off cowsay
 export ANSIBLE_NOCOWS=1
