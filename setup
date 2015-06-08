@@ -16,10 +16,10 @@ then
         rm -f ./tasks/Miniconda3-*
     else
         # Silent for a known working "production" setting 
-        # ansible-playbook -i ./hosts -u $1 ./site.yml
+        ansible-playbook -i ./hosts -u $1 ./site.yml
 
         # Verbose for development and lots of output
-        ansible-playbook -i ./hosts -vvvv -u $1 ./site.yml
+        # ansible-playbook -i ./hosts -vvvv -u $1 ./site.yml
     fi
 else
     echo "Please append a valid user name to the command."

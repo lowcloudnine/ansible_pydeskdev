@@ -5,12 +5,12 @@
   
   tasks:
     - name: create python development directory under opt
-      file: path=/opt/py_devtools state=directory
+      file: path=/opt/pytools state=directory
             owner={{ ansible_ssh_user }}
             mode=0755
 
     - name: create a envs directory under /opt/py_devtools
-      file: path=/opt/py_devtools/envs state=directory
+      file: path=/opt/pytools/envs state=directory
             owner={{ ansible_ssh_user }}
             mode=0755
 
