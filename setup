@@ -1,31 +1,179 @@
 #!/bin/bash
 
-# use apt to install ansible, won't do it if already installed
-if ! which ansible-playbook > /dev/null; 
+# An attempt to unset variables to "clean" them
+# unset -v VERBOSE COWSAY DO_CLEAN DO_REMOVE INVENTORY THE_USER
+# unset -f clean final_clean remove parse
+
+# #############################################################################
+# FUNCTIONS: must come first
+# #############################################################################
+
+# a function for clean the directories in a development situation
+clean() {
+    rm -rf ./runcons
+    rm -rf /opt/pytools
+    rm -rf ./tasks/Miniconda3-*
+    echo "Development clean completed!"
+}
+
+# a function for cleaning up after the script has successfully run
+final_clean() {
+    rm -rf ./runcons
+    rm -rf ./tasks/Miniconda3-*
+    echo "Development Environment Setup Complete!"
+    echo
+}
+
+# a function for printing a help message for help and errors
+help() {
+    echo "This is not helpful, yet!"
+}
+
+# a function for removing the development environment
+remove() {
+    ansible-playbook -i ./hosts -u ${THE_USER} ./remove.yml
+    apt-get remove ansible
+    echo Removed the development environment!
+}
+
+# a function to parse the arguments and create the necessary variables
+parse() {
+    # stolen from:
+    # http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
+
+    while [[ $# > 0 ]]
+    do
+        key="$1"
+        case $key in
+            -v|--verbose)
+                VERBOSE="true"
+                ;;
+            -r|--remove)
+                DO_REMOVE=true
+                ;;
+            -c|--clean)
+                DO_CLEAN=true
+                ;;
+            -s|--cowsay)
+                COWSAY=true
+                ;;
+            -u|--user|--username)
+                THE_USER="$2"
+                shift
+                ;;
+            -i|--inventory)
+                INVENTORY="$2"
+                shift
+                ;;
+            -h|--help|*)
+                # help and unknown option
+                NEED_HELP=true
+                ;;
+        esac
+        shift # past argument or value
+    done
+
+    if [ -z "$VERBOSE" ];
+    then
+        VERBOSE="false"
+    fi
+
+    if [ -z "$COWSAY" ];
+    then
+        COWSAY=false
+    fi
+
+    if [ -z "$DO_CLEAN" ];
+    then
+        DO_CLEAN=false
+    fi
+
+    if [ -z "$DO_REMOVE" ];
+    then
+        DO_REMOVE=false
+    fi
+
+    if [ -z "$INVENTORY" ];
+    then
+        INVENTORY="./hosts"
+    fi
+
+    if [ -z "${THE_USER}" ];
+    then
+        if [ -z "${SUDO_USER}" ];
+        then
+            THE_USER=$(whoami)
+        else
+            THE_USER="${SUDO_USER}"
+        fi
+    fi
+
+    if [ -z "$NEED_HELP" ];
+    then
+        NEED_HELP=false
+    fi
+}
+
+# #############################################################################
+# SCRIPT: the part that runs
+# #############################################################################
+
+parse
+
+# Some output for bug hunts
+echo NEED_HELP --- "${NEED_HELP}"
+echo DO_CLEAN ---- "${DO_CLEAN}"
+echo DO_REMOVE --- "${DO_REMOVE}"
+echo COWSAY ------ "${COWSAY}"
+echo VERBOSE ----- "${VERBOSE}"
+echo INVENTORY --- "${INVENTORY}"
+echo USER -------- "${THE_USER}"
+
+if $NEED_HELP;
+then
+    help
+    exit $?
+fi
+
+if $DO_CLEAN;
+then
+    clean
+    exit $?
+fi
+
+if $DO_REMOVE;
+then
+    remove
+    exit $?
+fi
+
+# use apt to install ansible if it's not installed
+if ! which ansible-playbook > /dev/null;
 then
     sudo apt-get install ansible
 fi
 
-# Turn off cowsay
-export ANSIBLE_NOCOWS=1
-
-# Run the playbook using the local hosts file
-if [ $1 ];
+# based on options in parse enable cowsay
+if $COWSAY;
 then
-    if [ $1 = "clean" ];
+    if ! which cowsay > /dev/null;
     then
-        rm -rf ./runcons
-        rm -rf /opt/pytools
-        rm -f ./tasks/Miniconda3-*
-    else
-        # Silent for a known working "production" setting 
-        # ansible-playbook -i ./hosts -u $1 ./site.yml
-
-        # Verbose for development and lots of output
-        ansible-playbook -i ./hosts -vvvv -u $1 ./site.yml
+        sudo apt-get install cowsay
     fi
+    export ANSIBLE_NOCOWS=0
 else
-    echo "Please append a valid user name to the command."
-    echo "Run the command as sudo.  An example would be:"
-    echo "sudo ./setup joecool"
+    export ANSIBLE_NOCOWS=1
 fi
+
+if $VERBOSE;
+then
+    # Silent for a known working "production" setting
+    # ansible-playbook -i ${INVENTORY} -vvvv -u ${USER} ./site.yml
+    echo "Verbose Ansible"
+else
+    # Verbose for development and lots of output
+    # ansible-playbook -i ${INVENTORY} -u ${USER} ./site.yml
+    echo "Regular Ansible"
+fi
+
+final_clean
