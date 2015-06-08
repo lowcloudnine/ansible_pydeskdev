@@ -1,21 +1,26 @@
 ---
-# file: tasks/ide_pycharm.yml
+# file: tasks/ides.yml
 - hosts: localhost
-  sudo: True
 
   tasks:
     # -------------------------------------------------------------------------
     # Install pycharm
     # -------------------------------------------------------------------------
-    - name: Add key and get source file
+    - name: add key and get source file for pycharm
       shell: "{{ item  }}"
       with_items:
         - wget -q -O - http://archive.getdeb.net/getdeb-archive.key | sudo apt-key add -
         - sudo sh -c 'echo "deb http://archive.getdeb.net/ubuntu trusty-getdeb apps" >> /etc/apt/sources.list.d/getdeb.list'
 
-    - name: Install Pycharm
+    - name: install pycharm
       apt:
         name: pycharm
         update_cache: yes
         state: present
+
+    # -------------------------------------------------------------------------
+    # Install spf13-vim, a bundled vim with many tools making it an IDE
+    # -------------------------------------------------------------------------
+    - name: install spf13-vim from http://vim.spf13.com/
+      shell:  curl http://j.mp/spf13-vim3 -L -o - | sh
 
