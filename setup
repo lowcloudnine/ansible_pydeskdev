@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# An attempt to unset variables to "clean" them
-# unset -v VERBOSE COWSAY DO_CLEAN DO_REMOVE INVENTORY THE_USER
-# unset -f clean final_clean remove parse
-
 # #############################################################################
 # FUNCTIONS: must come first
 # #############################################################################
@@ -25,7 +21,7 @@ final_clean() {
 }
 
 # a function for printing a help message for help and errors
-help() {
+display_help() {
     echo "This is not helpful, yet!"
 }
 
@@ -36,90 +32,97 @@ remove() {
     echo Removed the development environment!
 }
 
-# a function to parse the arguments and create the necessary variables
-parse() {
-    # stolen from:
-    # http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
-
-    while [[ $# > 0 ]]
-    do
-        key="$1"
-        case $key in
-            -v|--verbose)
-                VERBOSE="true"
-                ;;
-            -r|--remove)
-                DO_REMOVE=true
-                ;;
-            -c|--clean)
-                DO_CLEAN=true
-                ;;
-            -s|--cowsay)
-                COWSAY=true
-                ;;
-            -u|--user|--username)
-                THE_USER="$2"
-                shift
-                ;;
-            -i|--inventory)
-                INVENTORY="$2"
-                shift
-                ;;
-            -h|--help|*)
-                # help and unknown option
-                NEED_HELP=true
-                ;;
-        esac
-        shift # past argument or value
-    done
-
-    if [ -z "$VERBOSE" ];
-    then
-        VERBOSE="false"
-    fi
-
-    if [ -z "$COWSAY" ];
-    then
-        COWSAY=false
-    fi
-
-    if [ -z "$DO_CLEAN" ];
-    then
-        DO_CLEAN=false
-    fi
-
-    if [ -z "$DO_REMOVE" ];
-    then
-        DO_REMOVE=false
-    fi
-
-    if [ -z "$INVENTORY" ];
-    then
-        INVENTORY="./hosts"
-    fi
-
-    if [ -z "${THE_USER}" ];
-    then
-        if [ -z "${SUDO_USER}" ];
-        then
-            THE_USER=$(whoami)
-        else
-            THE_USER="${SUDO_USER}"
-        fi
-    fi
-
-    if [ -z "$NEED_HELP" ];
-    then
-        NEED_HELP=false
-    fi
-}
-
 # #############################################################################
 # SCRIPT: the part that runs
 # #############################################################################
 
-parse
+# ######################################
+# Parse command line args
+# ######################################
 
+# stolen from:
+# http://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
+
+# -------------------------------------
+# Parse keys and values if required
+# -------------------------------------
+
+while [[ $# > 0 ]]
+do
+    case $1 in
+        -v|--verbose)
+            VERBOSE="true"
+            ;;
+        -r|--remove)
+            DO_REMOVE=true
+            ;;
+        -c|--clean)
+            DO_CLEAN=true
+            ;;
+        -s|--cowsay)
+            COWSAY=true
+            ;;
+        -u|--user|--username)
+            THE_USER="$2"
+            shift
+            ;;
+        -i|--inventory)
+            INVENTORY="$2"
+            shift
+            ;;
+        -h|--help|*)
+            # help and unknown option
+            NEED_HELP=true
+            ;;
+    esac
+    shift # past argument or value
+done
+
+# -------------------------------------
+# From the input keys assign variables
+# -------------------------------------
+
+if [ -z "$VERBOSE" ];
+then
+    VERBOSE=false
+fi
+
+if [ -z "$COWSAY" ];
+then
+    COWSAY=false
+fi
+
+if [ -z "$DO_CLEAN" ];
+then
+    DO_CLEAN=false
+fi
+
+if [ -z "$DO_REMOVE" ];
+then
+    DO_REMOVE=false
+fi
+
+if [ -z "$INVENTORY" ];
+then
+    INVENTORY="./hosts"
+fi
+
+if [ -z "${THE_USER}" ];
+then
+    if [ -z "${SUDO_USER}" ];
+    then
+        THE_USER=$(whoami)
+    else
+        THE_USER="${SUDO_USER}"
+    fi
+fi
+
+if [ -z "$NEED_HELP" ];
+then
+    NEED_HELP=false
+fi
+
+# -------------------------------------
 # Some output for bug hunts
 echo NEED_HELP --- "${NEED_HELP}"
 echo DO_CLEAN ---- "${DO_CLEAN}"
@@ -128,19 +131,29 @@ echo COWSAY ------ "${COWSAY}"
 echo VERBOSE ----- "${VERBOSE}"
 echo INVENTORY --- "${INVENTORY}"
 echo USER -------- "${THE_USER}"
+# -------------------------------------
 
+# #####################################
+# From the input args determine what to run
+# #####################################
+
+# if -h or --help or something not recognized return help and
+# exit, do nothing else
 if $NEED_HELP;
 then
-    help
+    display_help
     exit $?
 fi
 
+# for development and testing, clean up for another test
 if $DO_CLEAN;
 then
     clean
     exit $?
 fi
 
+# remove all evidence this program was run, essential uninstall
+# ---- futureware
 if $DO_REMOVE;
 then
     remove
@@ -168,12 +181,10 @@ fi
 if $VERBOSE;
 then
     # Silent for a known working "production" setting
-    # ansible-playbook -i ${INVENTORY} -vvvv -u ${USER} ./site.yml
-    echo "Verbose Ansible"
+    ansible-playbook -i ${INVENTORY} -vvvv -u ${USER} ./site.yml
 else
     # Verbose for development and lots of output
-    # ansible-playbook -i ${INVENTORY} -u ${USER} ./site.yml
-    echo "Regular Ansible"
+    ansible-playbook -i ${INVENTORY} -u ${USER} ./site.yml
 fi
 
 final_clean
