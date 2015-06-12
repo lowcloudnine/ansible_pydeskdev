@@ -31,14 +31,17 @@
     # -------------------------------------------------------------------------
     # Install Oracle Java 8 and make default java on the system
     # -------------------------------------------------------------------------
-    - name: removed openjdk
+    - name: remove openjdk
       apt:
           name:  openjdk*
           state:  absent
 
     - name: update ppa with webupd8team
       # this creates duplicates so may need to look at cleaning up later
-      command:  sudo add-apt-repository ppa:webupd8team/java
+      action: apt_repository repo='ppa:webupd8team/java'
+
+    - name: auto accept license for Java
+      action: shell echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
 
     - name: install oracle 8
       apt:
@@ -61,7 +64,6 @@
     - name: clone the runcons project for rc files
       git: repo=https://github.com/lowcloudnine/runcons.git
            dest=../runcons
-           refspec=+refs/pull/*:refs/heads/*
 
     - name: change the owner on runcons
       file: path=../runcons
