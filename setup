@@ -29,7 +29,7 @@ display_help() {
 remove() {
     ansible-playbook -i ./hosts -u ${THE_USER} ./remove.yml
     apt-get remove ansible
-    echo Removed the development environment!
+    echo "Removed the development environment!"
 }
 
 # #############################################################################
@@ -124,13 +124,13 @@ fi
 
 # -------------------------------------
 # Some output for bug hunts
-echo NEED_HELP --- "${NEED_HELP}"
-echo DO_CLEAN ---- "${DO_CLEAN}"
-echo DO_REMOVE --- "${DO_REMOVE}"
-echo COWSAY ------ "${COWSAY}"
-echo VERBOSE ----- "${VERBOSE}"
-echo INVENTORY --- "${INVENTORY}"
-echo USER -------- "${THE_USER}"
+#echo NEED_HELP --- "${NEED_HELP}"
+#echo DO_CLEAN ---- "${DO_CLEAN}"
+#echo DO_REMOVE --- "${DO_REMOVE}"
+#echo COWSAY ------ "${COWSAY}"
+#echo VERBOSE ----- "${VERBOSE}"
+#echo INVENTORY --- "${INVENTORY}"
+#echo USER -------- "${THE_USER}"
 # -------------------------------------
 
 # #####################################
