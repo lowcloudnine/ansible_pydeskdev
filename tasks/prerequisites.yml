@@ -52,9 +52,13 @@
     # -------------------------------------------------------------------------
     # Update git to insure it is installed and at latest version in repo
     # -------------------------------------------------------------------------
+    - name: add git ppa to repository listing
+      apt_repository: repo='ppa:git-core/ppa' state=present
+
     - name: ensure git is at latest version
       apt:
           pkg: git
+          update_cache: yes
           state: latest
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

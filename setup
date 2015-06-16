@@ -1,5 +1,70 @@
 #!/bin/bash
 
+# Version and Licence text
+VERSION="Python Desktop Development Envirnoment Setup 0.1"
+LICENSE=$(cat <<EOF
+Copyright (C) 2015 Jon Schiefelbein
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of any organization or government.
+EOF
+)
+
+# The help text
+# This should follow the docopts format found at:
+# http://docopt.org
+HELP=$(cat <<EOF
+setup.
+
+Usage:
+    sudo ./setup -b | --verbose
+    sudo ./setup -s | --cowsay
+    sudo ./setup -i | --inventory
+    sudo ./setup -c | --clean
+    sudo ./setup -r | --remove
+    sudo ./setup -u | --username <system username>
+    sudo ./setup (-b | -s | -u <system username> | -i <inventory file>)
+    sudo ./setup -h | --help
+    setup --version
+
+Options:
+    -h --help      Show this screen
+    -v --version   Show version and licence information.
+    -s --cowsay    
+    -u --username  Username on the system to use for installation & permissions.
+                   Defaults to the user from whoami or SUDOUSER.
+    -i --inventory The location of the ansible inventory file.
+                   Defaults to ./hosts.
+    -e --editor    Editor to use when commiting from the command line
+
+Report bugs to:  lowcloudnine@hotmail.com
+Git Initiailization Setup home page:  https://github.com/lowcloudnine/runcons
+
+EOF
+)
+
 # #############################################################################
 # FUNCTIONS: must come first
 # #############################################################################
@@ -18,11 +83,6 @@ final_clean() {
     rm -rf ./tasks/Miniconda3-*
     echo "Development Environment Setup Complete!"
     echo
-}
-
-# a function for printing a help message for help and errors
-display_help() {
-    echo "This is not helpful, yet!"
 }
 
 # a function for removing the development environment
@@ -50,7 +110,12 @@ remove() {
 while [[ $# > 0 ]]
 do
     case $1 in
-        -v|--verbose)
+        -v|--version)
+            echo "$VERSION"
+            echo "$LICENSE"
+            exit
+            ;;
+        -b|--verbose)
             VERBOSE="true"
             ;;
         -r|--remove)
@@ -72,7 +137,8 @@ do
             ;;
         -h|--help|*)
             # help and unknown option
-            NEED_HELP=true
+            echo "$HELP"
+            exit
             ;;
     esac
     shift # past argument or value
@@ -117,11 +183,6 @@ then
     fi
 fi
 
-if [ -z "$NEED_HELP" ];
-then
-    NEED_HELP=false
-fi
-
 # -------------------------------------
 # Some output for bug hunts
 #echo NEED_HELP --- "${NEED_HELP}"
@@ -136,14 +197,6 @@ fi
 # #####################################
 # From the input args determine what to run
 # #####################################
-
-# if -h or --help or something not recognized return help and
-# exit, do nothing else
-if $NEED_HELP;
-then
-    display_help
-    exit $?
-fi
 
 # for development and testing, clean up for another test
 if $DO_CLEAN;
