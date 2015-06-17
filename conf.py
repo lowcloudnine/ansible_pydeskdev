@@ -47,7 +47,7 @@ source_suffix = ['.rst', '.md']
 #source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'README.md'
+master_doc = 'index'
 
 # General information about the project.
 project = u'Python Desktop Development Environment Setup'
