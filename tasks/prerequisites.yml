@@ -52,6 +52,14 @@
     # -------------------------------------------------------------------------
     # Update git to insure it is installed and at latest version in repo
     # -------------------------------------------------------------------------
+
+    # python-pycurl seems to be necessary for git installation
+    - name install python-pycurl on system python
+      apt:
+          pkg: python-pycurl
+          update_cache: yes
+          state: latest
+
     - name: add git ppa to repository listing
       apt_repository: repo='ppa:git-core/ppa' state=present
 
