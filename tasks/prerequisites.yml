@@ -54,7 +54,7 @@
     # -------------------------------------------------------------------------
 
     # python-pycurl seems to be necessary for git installation
-    - name install python-pycurl on system python
+    - name: install python-pycurl on system python
       apt:
           pkg: python-pycurl
           update_cache: yes
