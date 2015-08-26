@@ -11,7 +11,15 @@
     - name: update all packages to latest version
       apt:
         upgrade=dist
-
+  
+    # python-pycurl seems to be necessary early in the process  couldn't
+    # determine extactly where so I put it as up-front as possible
+    - name: install python-pycurl on system python
+      apt:
+          pkg: python-pycurl
+          update_cache: yes
+          state: latest
+          
     # -------------------------------------------------------------------------
     # Install cURL
     # -------------------------------------------------------------------------
