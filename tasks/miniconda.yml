@@ -49,20 +49,8 @@
     - name: add envs_dirs /opt/pytools/envs to condarc
       command:  /opt/pytools/miniconda3/bin/conda config --add envs_dirs /opt/pytools/envs
 
-    - name: create python26 env
-      command:  /opt/pytools/miniconda3/bin/conda create -n python26 python=2.6
-
-    - name: create python27 env
-      command:  /opt/pytools/miniconda3/bin/conda create -n python27 python=2.7
-
-    - name: create python33 env
-      command:  /opt/pytools/miniconda3/bin/conda create -n python33 python=3.3
-
-    - name: create python34 env
-      command:  /opt/pytools/miniconda3/bin/conda create -n python34 python=3.4
-
-    - name: create anaconda3 env
-      command:  /opt/pytools/miniconda3/bin/conda create -n anaconda3 python=3.4 anaconda
+    - name: create anaconda env
+      command:  /opt/pytools/miniconda3/bin/conda create -n anaconda python=3.5 anaconda
 
     - name: change permissions for all created envs
       file:  path=/opt/pytools/envs
@@ -74,18 +62,7 @@
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Update the envs and packages with them
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    - name: update python26
-      command:  /opt/pytools/envs/python26/bin/conda update --prefix /opt/pytools/envs/python26 --all
-
-    - name: update python27
-      command:  /opt/pytools/envs/python27/bin/conda update --prefix /opt/pytools/envs/python27 --all
-
-    - name: update python33
-      command:  /opt/pytools/envs/python33/bin/conda update --prefix /opt/pytools/envs/python33 --all
-
-    - name: update python34
-      command:  /opt/pytools/envs/python34/bin/conda update --prefix /opt/pytools/envs/python34 --all
-
-    - name: update anaconda3
-      command:  /opt/pytools/envs/anaconda3/bin/conda update --prefix /opt/pytools/envs/anaconda3 --all
+    
+    - name: update anaconda
+      command:  /opt/pytools/envs/anaconda3/bin/conda update --prefix /opt/pytools/envs/anaconda --all
   
